@@ -1,69 +1,118 @@
+import Link from "next/link";
 import Image from "next/image";
+import { PhoneBrowser } from "@/components/PhoneBrowser";
+import { PhoneFinder } from "@/components/PhoneFinder";
+import { ProductCarousel } from "@/components/ProductCarousel";
+import { getBrands, getHome, getStore } from "@/lib/api";
 
-export default function Home() {
+export const revalidate = 60;
+
+export default async function HomePage() {
+  const [home, brands, store] = await Promise.all([getHome(), getBrands(), getStore()]);
+  const hasProducts = home.trending.length > 0 || home.new_arrivals.length > 0;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <>
+      <section className="bg-ink text-white">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-2 md:items-center md:py-16">
+          <div>
+            <h1 className="max-w-md text-4xl font-extrabold leading-[1.05] sm:text-5xl">
+              Accessories that fit your phone.
+            </h1>
+            <p className="mt-4 max-w-md text-lg text-white/75">
+              Cases, chargers, screen guards and more.{" "}
+              {store.pickup_enabled
+                ? "Pick up at our Abuja shop or get it delivered."
+                : "Delivered across Abuja."}
+            </p>
+          </div>
+          <div className="md:justify-self-end md:w-full md:max-w-md">
+            <PhoneFinder />
+          </div>
+        </div>
+      </section>
+
+      {hasProducts ? (
+        <>
+          <ProductCarousel
+            title="Trending now"
+            products={home.trending}
+            viewAllHref="/shop?trending=true"
+          />
+          <ProductCarousel
+            title="Just in"
+            products={home.new_arrivals}
+            viewAllHref="/shop?new=true"
+          />
+        </>
+      ) : (
+        <section className="mx-auto max-w-6xl px-4 pt-10">
+          <p className="rounded-lg bg-paper p-6 text-muted">
+            New products are being added. Check back soon.
           </p>
+        </section>
+      )}
+
+      <section className="mt-12 bg-paper py-12">
+        <div className="mx-auto max-w-6xl px-4">
+          <h2 className="text-2xl font-bold">Shop by your phone</h2>
+          <p className="mb-5 mt-1 text-muted">Choose your brand, then your model.</p>
+          <PhoneBrowser brands={brands} />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </section>
+
+      {home.categories.length > 0 && (
+        <section className="mx-auto max-w-6xl px-4 pt-12">
+          <h2 className="text-2xl font-bold">Shop by type</h2>
+          <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {home.categories.map((category) => (
+              <li key={category.id}>
+                <Link
+                  href={`/shop?category=${category.slug}`}
+                  className="group flex h-full items-center gap-3 rounded-lg border border-line p-3 hover:border-ink"
+                >
+                  {category.image && (
+                    <Image
+                      src={category.image}
+                      alt=""
+                      width={48}
+                      height={48}
+                      className="h-12 w-12 shrink-0 rounded-md object-cover"
+                    />
+                  )}
+                  <span className="font-display text-lg font-bold leading-tight group-hover:underline">
+                    {category.name}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <section className="mx-auto mt-14 max-w-6xl px-4">
+        <dl className="grid gap-6 border-t border-line pt-8 sm:grid-cols-3">
+          {store.pickup_enabled && (
+            <div>
+              <dt className="font-display text-lg font-bold">Pick up at the shop</dt>
+              <dd className="mt-1 text-sm text-muted">{store.pickup_address}</dd>
+            </div>
+          )}
+          <div>
+            <dt className="font-display text-lg font-bold">Delivered in Abuja</dt>
+            <dd className="mt-1 text-sm text-muted">
+              Choose your area at checkout to see the delivery fee before you pay.
+            </dd>
+          </div>
+          <div>
+            <dt className="font-display text-lg font-bold">Pay your way</dt>
+            <dd className="mt-1 text-sm text-muted">
+              Pay online, or pay cash when your order arrives
+              {store.pickup_enabled ? " or when you collect it" : ""}.
+            </dd>
+          </div>
+        </dl>
+      </section>
+    </>
   );
 }
