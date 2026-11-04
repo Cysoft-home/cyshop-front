@@ -2,7 +2,9 @@ import { API_URL } from "./config";
 import type {
   Brand,
   Category,
+  DeliveryZone,
   HomeData,
+  OrderDetail,
   Paginated,
   Phone,
   ProductDetail,
@@ -59,4 +61,18 @@ export function getProducts(params: Record<string, string | undefined>) {
     if (value) query.set(key, value);
   }
   return requestOrNull<Paginated<ProductSummary>>(`/api/products/?${query}`, 30);
+}
+
+export const getZones = () => request<DeliveryZone[]>("/api/delivery-zones/", 300);
+
+// An order is private to the customer, so it is never cached.
+export async function getOrder(number: string, token: string): Promise<OrderDetail | null> {
+  const path = `/api/orders/${encodeURIComponent(number)}/?token=${encodeURIComponent(token)}`;
+  const response = await fetch(`${API_URL}${path}`, {
+    headers: { Accept: "application/json" },
+    cache: "no-store",
+  });
+  if (response.status === 404) return null;
+  if (!response.ok) throw new ApiError(response.status, "/api/orders/");
+  return (await response.json()) as OrderDetail;
 }

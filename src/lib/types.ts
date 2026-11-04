@@ -75,3 +75,80 @@ export type StoreInfo = {
   pickup_address: string;
   max_qty_per_line: number;
 };
+
+
+
+export type DeliveryZone = {
+  id: number;
+  name: string;
+  slug: string;
+  fee: string;
+  eta_note: string;
+  allows_cod: boolean;
+};
+
+export type CartIssue = {
+  variant_id: number;
+  product_name: string | null;
+  option: string;
+  code: string;
+  message: string;
+  available?: number;
+};
+
+export type CartLine = {
+  variant_id: number;
+  product_name: string;
+  product_slug: string;
+  option: string;
+  image: string | null;
+  unit_price: string;
+  quantity: number;
+  line_total: string;
+  in_stock: boolean;
+};
+
+export type CartQuote = {
+  lines: CartLine[];
+  issues: CartIssue[];
+  fulfilment: "delivery" | "pickup";
+  zone: string | null;
+  subtotal: string;
+  delivery_fee: string | null;
+  total: string | null;
+  can_checkout: boolean;
+  cod_available: boolean;
+  cod_max_total: string;
+};
+
+export type OrderItem = {
+  product_name: string;
+  option: string;
+  unit_price: string;
+  quantity: number;
+  line_total: string;
+};
+
+export type OrderDetail = {
+  number: string;
+  status: string;
+  status_label: string;
+  paid: boolean;
+  handover_code: string | null;
+  handover_qr: string | null;
+  fulfilment: "delivery" | "pickup";
+  payment_method: "online" | "cod";
+  customer_name: string;
+  zone: { name: string; slug: string } | null;
+  address: string;
+  landmark: string;
+  pickup_address: string | null;
+  note: string;
+  subtotal: string;
+  delivery_fee: string;
+  total: string;
+  items: OrderItem[];
+  created_at: string;
+};
+
+export type OrderCreated = OrderDetail & { tracking_token: string };

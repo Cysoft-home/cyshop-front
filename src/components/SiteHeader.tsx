@@ -1,24 +1,13 @@
 import Link from "next/link";
-
-export function Wordmark({ light = false }: { light?: boolean }) {
-  return (
-    <span className="flex items-center gap-2">
-      <svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
-        <rect width="64" height="64" rx="14" fill={light ? "#ffffff" : "#0e1330"} />
-        <path d="M14 32 24 20h28v24H24z" fill="#ffd23f" />
-        <circle cx="25" cy="32" r="3.2" fill={light ? "#ffffff" : "#0e1330"} />
-      </svg>
-      <span className="font-display text-lg font-extrabold tracking-tight">CYSOFTHOME</span>
-    </span>
-  );
-}
+import { CartLink } from "./CartLink";
+import { Logo } from "./Logo";
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
-        <Link href="/" aria-label="CYSOFTHOME home" className="mr-auto">
-          <Wordmark />
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
+        <Link href="/" aria-label="CyShop home" className="mr-auto">
+          <Logo compactOnPhone />
         </Link>
 
         <nav aria-label="Main" className="order-2 flex items-center gap-1 sm:order-3">
@@ -28,6 +17,7 @@ export function SiteHeader() {
           >
             Shop all
           </Link>
+          <CartLink />
         </nav>
 
         <form

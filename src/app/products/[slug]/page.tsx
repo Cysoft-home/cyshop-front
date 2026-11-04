@@ -97,7 +97,7 @@ export default async function ProductPage({ params }: Props) {
           )}
 
           <div className="mt-6">
-            <VariantPicker variants={product.variants} />
+            <VariantPicker variants={product.variants} maxQty={store.max_qty_per_line} />
           </div>
 
           <section className="mt-8 border-t border-line pt-6">

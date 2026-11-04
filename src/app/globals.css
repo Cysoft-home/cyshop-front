@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 /*
-  CYSOFTHOME look: indigo ink, ultramarine for actions, and a yellow price tag.
-  The price tag is the one loud thing on the page. Everything else stays quiet.
+  CyShop look: navy ink, warm paper, and an amber price tag.
+  The amber is the one loud thing on the page. Everything else stays quiet.
 */
 @theme {
-  --color-ink: #0e1330;
-  --color-brand: #2b3bf0;
-  --color-brand-dark: #1d2bc4;
-  --color-tag: #ffd23f;
-  --color-paper: #f5f6fa;
-  --color-line: #e3e5ee;
-  --color-muted: #5b6078;
+  --color-ink: #0a1628;
+  --color-brand: #0a1628;
+  --color-brand-dark: #1a2c4a;
+  --color-tag: #f2a71b;
+  --color-paper: #f5f3ee;
+  --color-line: #e4e0d6;
+  --color-muted: #596172;
   --color-ok: #0b7a4b;
   --color-warn: #a84300;
   --color-bad: #c62828;
@@ -29,6 +29,11 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  accent-color: var(--color-ink);
 }
 
 h1,
@@ -61,6 +66,26 @@ h3 {
     font-size: 1.75rem;
     padding: 0.6rem 1rem 0.6rem 1.6rem;
     clip-path: polygon(0.9rem 0, 100% 0, 100% 100%, 0.9rem 100%, 0 50%);
+  }
+
+  /* Main call to action: amber with navy text. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--color-tag);
+    color: var(--color-ink);
+    font-weight: 700;
+    border-radius: 0.5rem;
+    padding: 0.8rem 1.4rem;
+  }
+  .btn:hover:not(:disabled) {
+    filter: brightness(0.95);
+  }
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   .scroll-row {

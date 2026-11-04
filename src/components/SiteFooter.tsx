@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getStore } from "@/lib/api";
 import { STORE_NAME } from "@/lib/config";
 import type { StoreInfo } from "@/lib/types";
-import { Wordmark } from "./SiteHeader";
+import { Logo } from "./Logo";
 
 export async function SiteFooter() {
   let store: StoreInfo | null = null;
@@ -15,8 +15,8 @@ export async function SiteFooter() {
   return (
     <footer className="mt-16 bg-ink text-white">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-3">
-        <div className="text-white">
-          <Wordmark light />
+        <div>
+          <Logo reversed />
           <p className="mt-3 max-w-xs text-sm text-white/70">
             Phone accessories, sold from our shop in Abuja and delivered across the city.
           </p>
