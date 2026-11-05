@@ -148,7 +148,9 @@ export type OrderDetail = {
   delivery_fee: string;
   total: string;
   items: OrderItem[];
+  timeline: { to_status: string; status_label: string; created_at: string }[];
   created_at: string;
 };
+
 
 export type OrderCreated = OrderDetail & { tracking_token: string };

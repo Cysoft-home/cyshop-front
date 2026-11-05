@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { clearCart, useCart, useHydrated } from "@/lib/cart";
 import { formatNaira } from "@/lib/format";
+import { saveOrderToken, startPayment } from "@/lib/orders";
 import { CheckoutFailure, placeOrder, priceCart } from "@/lib/shop-api";
 import type { CartQuote, DeliveryZone, StoreInfo } from "@/lib/types";
 
@@ -141,8 +142,18 @@ export function CheckoutForm({ store, zones }: { store: StoreInfo; zones: Delive
         payment_method: method,
         note: text("note"),
       });
+           saveOrderToken(order.number, order.tracking_token);
       setPlaced(true);
       clearCart();
+      if (method === "online") {
+        try {
+          // On to Paystack to pay. If it cannot open, the order page has a Pay now button.
+          window.location.assign(await startPayment(order.number, order.tracking_token));
+          return;
+        } catch {
+          // fall through to the order page
+        }
+      }
       router.push(`/orders/${order.number}?token=${order.tracking_token}`);
     } catch (error) {
       if (error instanceof CheckoutFailure) {
